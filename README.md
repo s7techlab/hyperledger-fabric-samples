@@ -93,9 +93,16 @@ outside of your `$GOPATH`
 (for example `github.com/s7techlab/cckit-sample`)
 
 #### 3. Create `.proto` definitions 
+ 
+gRPC technology stack natively supports a clean and powerful way to specify service contracts using the Interface
+Definition Language (IDL):
+* messages defines data structures of the input parameters and return types.
+* services definition outlines methods signatures that can be invoked remotely
 
-for chaincode [schema](commercial-paper/proto/schema.proto) and 
-[service - chaincode interface](commercial-paper/proto/service.proto)
+Chaincode [messages and service](commercial-paper/proto/commercial-paper.proto) allows to define chaincode interface and
+data schema.
+
+
 
 #### 4. Generate code 
 
@@ -126,7 +133,7 @@ and run it. Following files will be generated:
 * [commercial-paper.pb.go](commercial-paper/proto/commercial-paper.pb.go) - Golang structs and gRPC service
 * [commercial-paper.pb.gw.go](commercial-paper/proto/commercial-paper.pb.gw.go) - gRPC gateway
 * [commercial-paper.swagger.json](commercial-paper/proto/commercial-paper.swagger.json) - Swagger specification
-* [commercial-paper.swagger.validator.pb.go](commercial-paper/proto/commercial-paper.validator.pb.go) - validators
+* [commercial-paper.validator.pb.go](commercial-paper/proto/commercial-paper.validator.pb.go) - validators
 
 #### 5. Load dependencies
 
