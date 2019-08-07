@@ -67,6 +67,7 @@ var (
 		ExternalId:   issue.ExternalId,
 	}
 
+	// We test only chaincode service, not chaincode with embedded service
 	cc = testcc.NewCCService(`Commercial paper`)
 )
 

@@ -28,6 +28,8 @@ validators, gRPC service and client, documentation in Markdown format and Swagge
 chaincode gateway for implementing API or SDK and mapper for embedding strong typed gRPC service
 to chaincode implementation.
 
+![img](commercial-paper/docs/img/cc-code-gen.png)
+
 1. [Protobuf generator](https://github.com/golang/protobuf)
 
 Go support for Protocol Buffers
@@ -90,7 +92,7 @@ outside of your `$GOPATH`
 # go mod init {put your module name here}  
 ```
 
-(for example `github.com/s7techlab/cckit-sample`)
+(for example `github.com/s7techlab/hyperledger-fabric-samples)
 
 #### 3. Create `.proto` definitions 
  
@@ -103,10 +105,9 @@ Chaincode [messages and service](commercial-paper/proto/commercial-paper.proto) 
 data schema.
 
 
-
 #### 4. Generate code 
 
-Create [Makefile](commercial-paper/Makefile) for compiling `.proto` to `Golang` code
+Create [proto/Makefile](commercial-paper/proto/Makefile) for compiling `.proto` to `Golang` code
 
 ```Makefile
 .: generate
@@ -114,16 +115,16 @@ Create [Makefile](commercial-paper/Makefile) for compiling `.proto` to `Golang` 
 generate:
 	@protoc --version
 	@echo "commercial paper schema proto generation"
-	@protoc -I=./proto/ \
+	@protoc -I=./ \
 	-I=${GOPATH}/src \
 	-I=${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-	--go_out=grpc:./proto/  \
-	--govalidators_out=./proto/ \
-	--grpc-gateway_out=logtostderr=true:./proto/ \
-	--swagger_out=logtostderr=true:./proto/ \
-	--doc_out=./proto/ --doc_opt=markdown,commercial-paper.md \
-	--cc-gateway_out=logtostderr=true:./proto/ \
-	./proto/*.proto
+	--go_out=plugins=grpc:./ \
+	--govalidators_out=./ \
+	--grpc-gateway_out=logtostderr=true:./ \
+	--swagger_out=logtostderr=true:./ \
+	--doc_out=./ --doc_opt=markdown,commercial-paper.md \
+	--cc-gateway_out=logtostderr=true:./ \
+	./*.proto
 ```
 
 and run it. Following files will be generated:
@@ -146,7 +147,7 @@ This command add dependencies to [go.mod](go.mod) file and download it to [vendo
 Go.mod file will contain:
 
 ```
-module github.com/s7techlab/cckit-sample
+module github.com/s7techlab/hyperledger-fabric-samples
 
 go 1.12
 
@@ -171,8 +172,34 @@ You can test chaincode service with command
 
 `#chaincode go test -mod vendor`
 
+Check test code coverage: chaincode logic must be covered by test to maximum level. Code coverage of 70-80% is a 
+reasonable goal for system test of most projects with most coverage metrics
+
+`#chaincode go test -mod vendor -coverage`
 
 
+#### 7. Implement off-chain application to communicate with chaincode (API)
+
+With [CCKit gateway](https://github.com/s7techlab/cckit/tree/master/gateway) and generated 
+[gRPC service server](commercial-paper/proto/commercial-paper.pb.go) and [gRPC gateway](commercial-paper/proto/commercial-paper.pb.gw.go)
+quite ease to implement [API](commercial-paper/api) for chaincode.
+
+You can run provided mocked example using command
+# cd  commercial-paper/api/mock
+# go run main.go
+
+![start](commercial-paper/docs/img/gateway-mocked-start.png)
+
+Then you can use API usage examples and sample payloads:
+
+![example](commercial-paper/docs/img/gateway-mocked-usage.png)
+
+`grpc-gateway` will automatically converts http request to gRPC call, input JSON payloads to protobuf, invokes chaincode 
+service and then converts returned value from protobuf to JSON. You can also use this service as pure gRPC service. 
+Chaincode methods can be called with [generated gRPC client](commercial-paper/proto/commercial-paper.pb.go). 
+
+Swagger [specification](commercial-paper/proto/commercial-paper.swagger.json), service and schema documentation are also 
+[auto-generated](commercial-paper/proto/commercial-paper.md).
 
 
 

@@ -2,16 +2,17 @@ package chaincode
 
 import (
 	"fmt"
-	"github.com/s7techlab/cckit/extensions/owner"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/pkg/errors"
-	"github.com/s7techlab/cckit-samples/commercial-paper/proto"
+	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/router"
 	"github.com/s7techlab/cckit/state"
 	m "github.com/s7techlab/cckit/state/mapping"
+	"github.com/s7techlab/hyperledger-fabric-samples/commercial-paper/proto"
 )
 
+//  New create new chaincode struct with Init and Invoke methods
 func New() (*router.Chaincode, error) {
 	r := router.New(`commercial paper`)
 	// Store on the ledger the information about chaincode instantiation
@@ -27,6 +28,7 @@ func New() (*router.Chaincode, error) {
 type CPaperImpl struct {
 }
 
+// state wrapper with mappings defined
 func (cc *CPaperImpl) state(ctx router.Context) m.MappedState {
 	return m.WrapState(ctx.State(), m.StateMappings{}.
 		//  Create mapping for Commercial Paper entity
@@ -37,6 +39,7 @@ func (cc *CPaperImpl) state(ctx router.Context) m.MappedState {
 		))
 }
 
+// event wrapper with mappings defined
 func (cc *CPaperImpl) event(ctx router.Context) state.Event {
 	return m.WrapEvent(ctx.Event(), m.EventMappings{}.
 		// Event name will be "IssueCommercialPaper", payload - same as issue payload

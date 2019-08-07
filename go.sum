@@ -198,6 +198,8 @@ github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6So
 github.com/s7techlab/cckit v0.4.4/go.mod h1:i/XsLaJePLZFwNU0+lMtr6zFmebAh7ShOX+AGKpPems=
 github.com/s7techlab/cckit v0.6.1 h1:UUl7qH86rWJBm/YNIPUEJqA90KuTvaw3JkK59738ufw=
 github.com/s7techlab/cckit v0.6.1/go.mod h1:exUddLm0wEzaYImDYhNuo2smO+jRIGL05kbnVJLT5HI=
+github.com/s7techlab/cckit-samples v0.0.0-20190807080503-6047e4a2e6e4 h1:vDv1xFeMfaxtGAdOae+mST7m3MvZWQtxK6DsBhXPYro=
+github.com/s7techlab/cckit-samples v0.0.0-20190807080503-6047e4a2e6e4/go.mod h1:sXBp8MFgZ+KrLz+RAR1bHHqo7Xoe51R/jUBwDmA3Nq0=
 github.com/s7techlab/hlf-sdk-go v0.0.0-20190321081842-4e70f5d9dcf3/go.mod h1:6gP0iaUnUDlTZZKkCGB9/T0t7GAoZpB+a9oJ9KCjmeg=
 github.com/s7techlab/hlf-sdk-go v0.1.3 h1:nVZfFzWy4RL1vEBK1s75lfBWr3w+Lsm5qX1DK2vDLxI=
 github.com/s7techlab/hlf-sdk-go v0.1.3/go.mod h1:AB6zbSaKecJXrwlls18P8hDH4c42OU5IJp2C2wAEIuE=
