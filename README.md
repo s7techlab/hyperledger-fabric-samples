@@ -50,7 +50,7 @@ OpenAPI (Swagger) v2.
 documentation generator plugin for the Google Protocol Buffers compiler (protoc). 
 The plugin can generate HTML, JSON, DocBook and Markdown documentation from comments in your .proto files.
 
-5. [Chaincode gateway generator]()
+5. [Chaincode gateway generator](https://github.com/s7techlab/cckit/tree/master/gateway)
 
 #### Install generators
 
