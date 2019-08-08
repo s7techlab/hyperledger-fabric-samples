@@ -80,7 +80,7 @@ way to work with dependencies. Simple golang module usage example can be founded
 [here](https://github.com/golang/go/wiki/Modules#quick-start). Steps to create Golang project with modules:
 
 
-## Tutorial based on Commercial Paper example
+## Step by step
 
 #### 1. Create a directory for project 
 
@@ -185,8 +185,10 @@ With [CCKit gateway](https://github.com/s7techlab/cckit/tree/master/gateway) and
 quite ease to implement [API](commercial-paper/api) for chaincode.
 
 You can run provided mocked example using command
-# cd  commercial-paper/api/mock
+```
+# cd commercial-paper/api/mock
 # go run main.go
+```
 
 ![start](commercial-paper/docs/img/gateway-mocked-start.png)
 
