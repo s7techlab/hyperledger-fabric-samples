@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/s7techlab/cckit-samples/commercial-paper/chaincode"
+	"github.com/s7techlab/hyperledger-fabric-samples/commercial-paper/chaincode"
 )
 
 func main() {

@@ -5,14 +5,16 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/pkg/errors"
+
 	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/router"
 	"github.com/s7techlab/cckit/state"
 	m "github.com/s7techlab/cckit/state/mapping"
+
 	"github.com/s7techlab/hyperledger-fabric-samples/commercial-paper/proto"
 )
 
-//  New create new chaincode struct with Init and Invoke methods
+//  New creates new chaincode struct with Init and Invoke methods
 func New() (*router.Chaincode, error) {
 	r := router.New(`commercial paper`)
 	// Store on the ledger the information about chaincode instantiation
@@ -21,7 +23,6 @@ func New() (*router.Chaincode, error) {
 	if err := proto.RegisterCPaperChaincode(r, &CPaperImpl{}); err != nil {
 		return nil, err
 	}
-
 	return router.NewChaincode(r), nil
 }
 
@@ -152,9 +153,6 @@ func (cc *CPaperImpl) Redeem(ctx router.Context, redeem *proto.RedeemCommercialP
 	if err != nil {
 		return nil, errors.Wrap(err, "get cpaper")
 	}
-	if err != nil {
-		return nil, errors.Wrap(err, "paper not found")
-	}
 
 	// Check paper is not REDEEMED
 	if cpaper.State == proto.CommercialPaper_REDEEMED {
@@ -162,12 +160,12 @@ func (cc *CPaperImpl) Redeem(ctx router.Context, redeem *proto.RedeemCommercialP
 	}
 
 	// Verify that the redeemer owns the commercial paper before redeeming it
-	if cpaper.Owner == redeem.RedeemingOwner {
-		cpaper.Owner = redeem.Issuer
-		cpaper.State = proto.CommercialPaper_REDEEMED
-	} else {
+	if cpaper.Owner != redeem.RedeemingOwner {
 		return nil, fmt.Errorf("redeeming owner does not own paper %s %s", cpaper.Issuer, cpaper.PaperNumber)
 	}
+
+	cpaper.Owner = redeem.Issuer
+	cpaper.State = proto.CommercialPaper_REDEEMED
 
 	if err = cc.event(ctx).Set(redeem); err != nil {
 		return nil, err
