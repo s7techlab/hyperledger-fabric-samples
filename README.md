@@ -1,7 +1,7 @@
 # Hyperledger Fabric Golang application examples
 
 
-* [Commercial paper](commercial-paper)
+* [Commercial paper](samples/cpaper)
 
 
 ## How to create HyperLedger Fabric Golang application project
@@ -30,7 +30,7 @@ validators, gRPC service and client, documentation in Markdown format and Swagge
 chaincode gateway for implementing API or SDK and mapper for embedding strong typed gRPC service
 to chaincode implementation.
 
-![img](commercial-paper/docs/img/cc-code-gen.png)
+![img](samples/cpaper/docs/img/cc-code-gen.png)
 
 1. [Protobuf generator](https://github.com/golang/protobuf)
 
@@ -103,13 +103,13 @@ Definition Language (IDL):
 * messages defines data structures of the input parameters and return types.
 * services definition outlines methods signatures that can be invoked remotely
 
-Chaincode [messages and service](commercial-paper/proto/commercial-paper.proto) allows to define chaincode interface and
+Chaincode [messages and service](samples/cpaper/cpaper.proto) allows to define chaincode interface and
 data schema.
 
 
 #### 4. Generate code 
 
-Create [proto/Makefile](commercial-paper/proto/Makefile) for compiling `.proto` to `Golang` code
+Create [proto/Makefile](samples/cpaper/proto/Makefile) for compiling `.proto` to `Golang` code
 
 ```Makefile
 .: generate
@@ -131,12 +131,12 @@ generate:
 
 and run it. Following files will be generated:
 
-* [commercial-paper.md](commercial-paper/proto/commercial-paper.md) -documentation
-* [commercial-paper.pb.cc.go](commercial-paper/proto/commercial-paper.pb.cc.go) - gateway for chaincode
-* [commercial-paper.pb.go](commercial-paper/proto/commercial-paper.pb.go) - Golang structs and gRPC service
-* [commercial-paper.pb.gw.go](commercial-paper/proto/commercial-paper.pb.gw.go) - gRPC gateway
-* [commercial-paper.swagger.json](commercial-paper/proto/commercial-paper.swagger.json) - Swagger specification
-* [commercial-paper.validator.pb.go](commercial-paper/proto/commercial-paper.validator.pb.go) - validators
+* [commercial-paper.md](samples/cpaper/proto/commercial-paper.md) -documentation
+* [commercial-paper.pb.cc.go](samples/cpaper/proto/commercial-paper.pb.cc.go) - gateway for chaincode
+* [commercial-paper.pb.go](samples/cpaper/proto/commercial-paper.pb.go) - Golang structs and gRPC service
+* [commercial-paper.pb.gw.go](samples/cpaper/proto/commercial-paper.pb.gw.go) - gRPC gateway
+* [commercial-paper.swagger.json](samples/cpaper/proto/commercial-paper.swagger.json) - Swagger specification
+* [commercial-paper.validator.pb.go](samples/cpaper/proto/commercial-paper.validator.pb.go) - validators
 
 #### 5. Load dependencies
 
@@ -170,8 +170,8 @@ require (
 
 #### 6. Implement chaincode as service and tests
 
-Implement [chaincode service and chaincode](commercial-paper/chaincode/chaincode.go) and 
-[test](commercial-paper/chaincode/chaincode_test.go). After that don't forget to call `go mod vendor`
+Implement [chaincode service and chaincode](samples/cpaper/chaincode/chaincode.go) and 
+[test](samples/cpaper/chaincode/chaincode_test.go). After that don't forget to call `go mod vendor`
 to download newly added dependencies  (Ginkgo and Gomega)
 
 You can test chaincode service with command
@@ -187,8 +187,8 @@ reasonable goal for system test of most projects with most coverage metrics
 #### 7. Implement off-chain application to communicate with chaincode (API)
 
 With [CCKit gateway](https://github.com/s7techlab/cckit/tree/master/gateway) and generated 
-[gRPC service server](commercial-paper/proto/commercial-paper.pb.go) and [gRPC gateway](commercial-paper/proto/commercial-paper.pb.gw.go)
-quite ease to implement [API](commercial-paper/api) for chaincode.
+[gRPC service server](samples/cpaper/proto/commercial-paper.pb.go) and [gRPC gateway](samples/cpaper/proto/commercial-paper.pb.gw.go)
+quite ease to implement [API](samples/cpaper/api) for chaincode.
 
 You can run provided mocked example using command
 ```
@@ -196,18 +196,18 @@ You can run provided mocked example using command
 # go run main.go
 ```
 
-![start](commercial-paper/docs/img/gateway-mocked-start.png)
+![start](samples/cpaper/docs/img/gateway-mocked-start.png)
 
 Then you can use API usage examples and sample payloads:
 
-![example](commercial-paper/docs/img/gateway-mocked-usage.png)
+![example](samples/cpaper/docs/img/gateway-mocked-usage.png)
 
 `grpc-gateway` will automatically converts http request to gRPC call, input JSON payloads to protobuf, invokes chaincode 
 service and then converts returned value from protobuf to JSON. You can also use this service as pure gRPC service. 
-Chaincode methods can be called with [generated gRPC client](commercial-paper/proto/commercial-paper.pb.go). 
+Chaincode methods can be called with [generated gRPC client](samples/cpaper/proto/commercial-paper.pb.go). 
 
-Swagger [specification](commercial-paper/proto/commercial-paper.swagger.json), service and schema documentation are also 
-[auto-generated](commercial-paper/proto/commercial-paper.md).
+Swagger [specification](samples/cpaper/proto/commercial-paper.swagger.json), service and schema documentation are also 
+[auto-generated](samples/cpaper/proto/commercial-paper.md).
 
 
 
