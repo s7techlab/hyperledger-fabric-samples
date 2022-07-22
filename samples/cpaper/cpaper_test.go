@@ -15,6 +15,7 @@ import (
 	expectcc "github.com/s7techlab/cckit/testing/expect"
 
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/cpaper"
+	"github.com/s7techlab/hyperledger-fabric-samples/samples/cpaper/chaincode"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/cpaper/testdata"
 )
 
@@ -40,10 +41,10 @@ var _ = Describe(`CommercialPaper`, func() {
 
 	BeforeSuite(func() {
 
-		ccImpl, err = cpaper.NewCC()
+		ccImpl, err = chaincode.NewCC()
 		Expect(err).NotTo(HaveOccurred())
 
-		ccEncImpl, err = cpaper.NewCCEncrypted()
+		ccEncImpl, err = chaincode.NewCCEncrypted()
 		Expect(err).NotTo(HaveOccurred())
 
 		mockstub = testcc.NewMockStub(`cpaper_as_service`, ccImpl)

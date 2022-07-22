@@ -2,25 +2,24 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/s7techlab/cckit/identity/testdata"
 	"google.golang.org/grpc"
 
 	"github.com/s7techlab/cckit/gateway"
 	"github.com/s7techlab/cckit/testing"
 
-	"github.com/s7techlab/hyperledger-fabric-samples/samples/cpaper"
-	"github.com/s7techlab/hyperledger-fabric-samples/samples/cpaper/chaincode"
+	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/chaincode/erc20"
 )
 
 const (
-	chaincodeName = `cpaper`
-	channelName   = `cpaper`
+	chaincodeName = `erc20`
+	channelName   = `erc20`
 
 	grpcAddress = `:8080`
 	restAddress = `:8081`
@@ -30,39 +29,41 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// default identity for signing requests to peeer (mocked)
+	apiIdentity := testdata.Certificates[0].MustIdentity(testdata.DefaultMSP)
+
 	// Create mock for commercial paper chaincode invocation
 	// Commercial paper chaincode instance
-	cc, err := chaincode.New()
+	cc, err := erc20.New()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Mockstub for commercial paper
-	cpaperMock := testing.NewMockStub(chaincodeName, cc)
+	// Mockstub for erc20 chaincode
+	erc20Mock := testing.NewMockStub(chaincodeName, cc)
+	erc20Mock.From(apiIdentity).Init()
 
 	// Chaincode invocation service mock. For real network you can use example with hlf-sdk-go
-	cpaperPeer := testing.NewPeer().WithChannel(channelName, cpaperMock)
+	peer := testing.NewPeer().WithChannel(channelName, erc20Mock)
 
-	// default identity for signing requests to peeer (mocked)
-	apiIdentity, err := testing.IdentityFromFile(`MSP`, `../../testdata/admin.pem`, ioutil.ReadFile)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	ccInstance := gateway.NewChaincodeInstanceService(peer, &gateway.ChaincodeLocator{
+		Channel:   channelName,
+		Chaincode: chaincodeName,
+	}, gateway.WithDefaultSigner(apiIdentity))
+
 	// Generated gateway for access to chaincode from external application
-	cpaperGateway := cpaper.NewCPaperServiceGateway(
-		cpaperPeer, // gateway use mocked chaincode access service
-		channelName,
-		chaincodeName,
-		gateway.WithDefaultSigner(apiIdentity))
+	gateways := erc20.Gateways(ccInstance)
 
 	grpcListener, err := net.Listen("tcp", grpcAddress)
 	if err != nil {
 		log.Fatalf("failed to listen grpc: %v", err)
 	}
 
-	// Create gRPC server
+	// Create gRPC server with services used in chaincode
 	s := grpc.NewServer()
-	cpaper.RegisterCPaperServiceServer(s, cpaperGateway)
+	for _, gw := range gateways {
+		s.RegisterService(gw.GRPCDesc(), gw.Impl())
+	}
 
 	// Runs gRPC server in goroutine
 	go func() {
@@ -75,14 +76,15 @@ func main() {
 	// wait for gRPC service stared
 	time.Sleep(3 * time.Second)
 
-	// Register gRPC server endpoint
+	// Init grpc gateways for REST API
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err = cpaper.RegisterCPaperServiceHandlerFromEndpoint(ctx, mux, grpcAddress, opts)
-	if err != nil {
-		log.Fatalf("failed to register handler from endpoint %v", err)
-	}
 
+	for _, gw := range gateways {
+		if err := gw.GRPCGatewayRegister()(ctx, mux, grpcAddress, opts); err != nil {
+			log.Fatalf("failed to register handler from endpoint %v", err)
+		}
+	}
 	log.Printf(`listen REST at %s`, restAddress)
 
 	// Start HTTP server (and proxy calls to gRPC server endpoint)

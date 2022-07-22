@@ -1,25 +1,27 @@
-package cpaper
+package chaincode
 
 import (
 	"github.com/s7techlab/cckit/extensions/encryption"
 	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/router"
+
+	"github.com/s7techlab/hyperledger-fabric-samples/samples/cpaper"
 )
 
-func CCRouter(name string) (*router.Group, error) {
+func Router(name string) (*router.Group, error) {
 	r := router.New(name)
 	// Store on the ledger the information about chaincode instantiation
 	r.Init(owner.InvokeSetFromCreator)
 
-	if err := RegisterCPaperServiceChaincode(r, &CPaperService{}); err != nil {
+	if err := cpaper.RegisterCPaperServiceChaincode(r, &cpaper.CPaperService{}); err != nil {
 		return nil, err
 	}
 
 	return r, nil
 }
 
-func NewCC() (*router.Chaincode, error) {
-	r, err := CCRouter(`CommercialPaper`)
+func New() (*router.Chaincode, error) {
+	r, err := Router(`CommercialPaper`)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +29,8 @@ func NewCC() (*router.Chaincode, error) {
 	return router.NewChaincode(r), nil
 }
 
-func NewCCEncrypted() (*router.Chaincode, error) {
-	r, err := CCRouter(`CommercialPaperEncrypted`)
+func NewEncrypted() (*router.Chaincode, error) {
+	r, err := Router(`CommercialPaperEncrypted`)
 	if err != nil {
 		return nil, err
 	}

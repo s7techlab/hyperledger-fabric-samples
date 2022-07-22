@@ -56,30 +56,15 @@ The plugin can generate HTML, JSON, DocBook and Markdown documentation from comm
 
 #### Install generators
 
-```shell
-# go get -u github.com/golang/protobuf/protoc-gen-go
-# go get github.com/mwitkow/go-proto-validators/protoc-gen-govalidators
-# go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-# go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-# go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
-# GO111MODULE=on go install github.com/s7techlab/cckit/gateway/protoc-gen-cc-gateway
-```
+`cd geterators && ./install.sh`
 
-This will place five binaries in your `$GOBIN`;
+This will place five binaries in [generators/bin](generators/bin);
 
 * `protoc-gen-go`
 * `protoc-gen-govalidators`
 * `protoc-gen-grpc-gateway`
 * `protoc-gen-swagger`
 * `protoc-gen-doc`
-
-Make sure that your `$GOBIN` is in your `$PATH`.
-
-### Dependencies
-
-Golang 1.11+ supports [modules](https://blog.golang.org/using-go-modules), this is recommended
-way to work with dependencies. Simple golang module usage example can be founded 
-[here](https://github.com/golang/go/wiki/Modules#quick-start). Steps to create Golang project with modules:
 
 
 ## Step by step

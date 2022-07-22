@@ -258,6 +258,8 @@ github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6L
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/s7techlab/cckit v0.10.4 h1:yf1ZqpccxkmwiCzwZIq/VdjwzO1e5TRJSISl5C1qQjM=
 github.com/s7techlab/cckit v0.10.4/go.mod h1:sr7AxQkKF2kahP6VIzSHOlIu/qswGSOrwGyJTWDSbAY=
+github.com/s7techlab/cckit v0.10.5-0.20220720095735-8b755208e0fc h1:B4JyTHdtyy0Ia5qPTxu6oxSqK7aDYiKYsyn/Ww+HeRE=
+github.com/s7techlab/cckit v0.10.5-0.20220720095735-8b755208e0fc/go.mod h1:Sl/ZLUcqoUYKRoGLEjx5/BX1YgbAqPaxQvWrQiNxmu8=
 github.com/sirupsen/logrus v1.0.5/go.mod h1:pMByvHTf9Beacp5x1UXfOR9xyW/9antXMhjMPG0dEzc=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.3.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
