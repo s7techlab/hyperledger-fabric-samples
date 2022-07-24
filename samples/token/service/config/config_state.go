@@ -33,35 +33,28 @@ func (s *StateService) GetConfig(ctx router.Context, _ *emptypb.Empty) (*Config,
 
 // GetToken naming for token is[{TokenType}, {GroupIdPart1}, {GroupIdPart2}]
 func (s *StateService) GetToken(ctx router.Context, id *TokenId) (*Token, error) {
+	if err := router.ValidateRequest(id); err != nil {
+		return nil, err
+	}
 	var (
-		tokenTypeName  string
-		tokenGroupName []string
-		tokenType      *TokenType
-		tokenGroup     *TokenGroup
-		err            error
+		tokenType  *TokenType
+		tokenGroup *TokenGroup
+		err        error
 	)
-	if len(id.Token) > 0 {
-		tokenTypeName = id.Token[0]
-	}
 
-	if len(id.Token) > 1 {
-		tokenGroupName = id.Token[1:]
-	}
-
-	tokenType, err = s.GetTokenType(ctx, &TokenTypeId{Name: tokenTypeName})
+	tokenType, err = s.GetTokenType(ctx, &TokenTypeId{Symbol: id.Symbol})
 	if err != nil {
 		return nil, fmt.Errorf(`token type: %w`, err)
 	}
 
-	if len(tokenGroupName) > 0 {
-		tokenGroup, err = s.GetTokenGroup(ctx, &TokenGroupId{Name: tokenGroupName})
+	if len(id.Group) > 0 {
+		tokenGroup, err = s.GetTokenGroup(ctx, &TokenGroupId{Symbol: id.Symbol, Group: id.Group})
 		if err != nil {
 			return nil, fmt.Errorf(`token type: %w`, err)
 		}
 	}
 
 	return &Token{
-		Token: id.Token,
 		Type:  tokenType,
 		Group: tokenGroup,
 	}, nil
@@ -73,8 +66,8 @@ func (s *StateService) GetDefaultToken(ctx router.Context, _ *emptypb.Empty) (*T
 		return nil, err
 	}
 
-	if len(config.DefaultToken) > 0 {
-		return s.GetToken(ctx, &TokenId{Token: config.DefaultToken})
+	if config.DefaultToken != nil {
+		return s.GetToken(ctx, config.DefaultToken)
 	}
 
 	return nil, nil
@@ -104,8 +97,8 @@ func (s *StateService) CreateTokenType(ctx router.Context, req *CreateTokenTypeR
 	}
 
 	if err := Event(ctx).Set(&TokenTypeCreated{
-		Name:   req.Name,
 		Symbol: req.Symbol,
+		Name:   req.Name,
 	}); err != nil {
 		return nil, err
 	}
@@ -113,6 +106,10 @@ func (s *StateService) CreateTokenType(ctx router.Context, req *CreateTokenTypeR
 }
 
 func (s *StateService) GetTokenType(ctx router.Context, id *TokenTypeId) (*TokenType, error) {
+	if err := router.ValidateRequest(id); err != nil {
+		return nil, err
+	}
+
 	tokenType, err := State(ctx).Get(id, &TokenType{})
 	if err != nil {
 		return nil, err
@@ -139,7 +136,11 @@ func (s *StateService) DeleteTokenType(ctx router.Context, id *TokenTypeId) (*To
 }
 
 func (s *StateService) GetTokenGroups(ctx router.Context, id *TokenTypeId) (*TokenGroups, error) {
-	tokenGroups, err := State(ctx).ListWith(&TokenGroup{}, []string{id.Name})
+	if err := router.ValidateRequest(id); err != nil {
+		return nil, err
+	}
+
+	tokenGroups, err := State(ctx).ListWith(&TokenGroup{}, []string{id.Symbol})
 	if err != nil {
 		return nil, err
 	}
@@ -151,14 +152,15 @@ func (s *StateService) CreateTokenGroup(ctx router.Context, req *CreateTokenGrou
 		return nil, err
 	}
 
-	_, err := s.GetTokenType(ctx, &TokenTypeId{Name: req.TokenType})
+	_, err := s.GetTokenType(ctx, &TokenTypeId{Symbol: req.Symbol})
 	if err != nil {
 		return nil, err
 	}
 
 	tokenGroup := &TokenGroup{
+		Symbol:      req.Symbol,
+		Group:       req.Group,
 		Name:        req.Name,
-		TokenType:   req.TokenType,
 		TotalSupply: 0,
 	}
 
@@ -173,8 +175,9 @@ func (s *StateService) CreateTokenGroup(ctx router.Context, req *CreateTokenGrou
 	}
 
 	if err := Event(ctx).Set(&TokenGroupCreated{
-		Name:      req.Name,
-		TokenType: req.TokenType,
+		Symbol: req.Symbol,
+		Group:  req.Group,
+		Name:   req.Name,
 	}); err != nil {
 		return nil, err
 	}

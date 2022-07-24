@@ -57,11 +57,14 @@ func (this *UpdateTokenTypeRequest) Validate() error {
 	return nil
 }
 func (this *CreateTokenGroupRequest) Validate() error {
-	if len(this.Name) < 1 {
-		return github_com_mwitkow_go_proto_validators.FieldError("Name", fmt.Errorf(`value '%v' must contain at least 1 elements`, this.Name))
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
 	}
-	if this.TokenType == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("TokenType", fmt.Errorf(`value '%v' must not be an empty string`, this.TokenType))
+	if len(this.Group) < 1 {
+		return github_com_mwitkow_go_proto_validators.FieldError("Group", fmt.Errorf(`value '%v' must contain at least 1 elements`, this.Group))
+	}
+	if this.Name == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Name", fmt.Errorf(`value '%v' must not be an empty string`, this.Name))
 	}
 	for _, item := range this.Meta {
 		if item != nil {
@@ -73,9 +76,17 @@ func (this *CreateTokenGroupRequest) Validate() error {
 	return nil
 }
 func (this *Config) Validate() error {
+	if this.DefaultToken != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.DefaultToken); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("DefaultToken", err)
+		}
+	}
 	return nil
 }
 func (this *TokenId) Validate() error {
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
+	}
 	return nil
 }
 func (this *TokenTypeId) Validate() error {

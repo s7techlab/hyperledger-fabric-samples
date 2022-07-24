@@ -85,7 +85,7 @@
         ]
       }
     },
-    "/token/tokens/{token_name}/groups/{name}": {
+    "/token/tokens/{symbol}/groups/{group}": {
       "get": {
         "operationId": "ConfigService_GetTokenGroup",
         "responses": {
@@ -104,13 +104,13 @@
         },
         "parameters": [
           {
-            "name": "token_name",
+            "name": "symbol",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "name",
+            "name": "group",
             "in": "path",
             "required": true,
             "type": "array",
@@ -143,13 +143,13 @@
         },
         "parameters": [
           {
-            "name": "token_name",
+            "name": "symbol",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "name",
+            "name": "group",
             "in": "path",
             "required": true,
             "type": "array",
@@ -165,7 +165,7 @@
         ]
       }
     },
-    "/token/tokens/{token}": {
+    "/token/tokens/{symbol}/{group}": {
       "get": {
         "operationId": "ConfigService_GetToken",
         "responses": {
@@ -184,7 +184,13 @@
         },
         "parameters": [
           {
-            "name": "token",
+            "name": "symbol",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "group",
             "in": "path",
             "required": true,
             "type": "array",
@@ -252,7 +258,7 @@
         ]
       }
     },
-    "/token/types/{name}": {
+    "/token/types/{symbol}": {
       "get": {
         "operationId": "ConfigService_GetTokenType",
         "responses": {
@@ -271,7 +277,7 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "symbol",
             "in": "path",
             "required": true,
             "type": "string"
@@ -299,7 +305,7 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "symbol",
             "in": "path",
             "required": true,
             "type": "string"
@@ -327,7 +333,7 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "symbol",
             "in": "path",
             "required": true,
             "type": "string"
@@ -346,7 +352,7 @@
         ]
       }
     },
-    "/token/types/{name}/groups": {
+    "/token/types/{symbol}/groups": {
       "get": {
         "operationId": "ConfigService_GetTokenGroups",
         "responses": {
@@ -365,7 +371,7 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "symbol",
             "in": "path",
             "required": true,
             "type": "string"
@@ -393,15 +399,10 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "symbol",
             "in": "path",
             "required": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "csv",
-            "minItems": 1
+            "type": "string"
           },
           {
             "name": "body",
@@ -423,10 +424,7 @@
       "type": "object",
       "properties": {
         "default_token": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "$ref": "#/definitions/balanceTokenId"
         },
         "max_token_types_num": {
           "type": "integer",
@@ -441,13 +439,16 @@
     "balanceCreateTokenGroupRequest": {
       "type": "object",
       "properties": {
-        "name": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "token_type": {
+        "name": {
           "type": "string"
         },
         "total_supply": {
@@ -493,12 +494,6 @@
     "balanceToken": {
       "type": "object",
       "properties": {
-        "token": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "type": {
           "$ref": "#/definitions/balanceTokenType"
         },
@@ -510,13 +505,16 @@
     "balanceTokenGroup": {
       "type": "object",
       "properties": {
-        "name": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "token_type": {
+        "name": {
           "type": "string"
         },
         "total_supply": {
@@ -552,6 +550,20 @@
         }
       }
     },
+    "balanceTokenId": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "balanceTokenMeta": {
       "type": "object",
       "properties": {
@@ -577,10 +589,10 @@
     "balanceTokenType": {
       "type": "object",
       "properties": {
-        "name": {
+        "symbol": {
           "type": "string"
         },
-        "symbol": {
+        "name": {
           "type": "string"
         },
         "decimals": {

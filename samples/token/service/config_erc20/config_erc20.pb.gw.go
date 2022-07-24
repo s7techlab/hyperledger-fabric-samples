@@ -329,13 +329,13 @@ func RegisterConfigERC20ServiceHandlerClient(ctx context.Context, mux *runtime.S
 }
 
 var (
-	pattern_ConfigERC20Service_GetName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigERC20Service_GetName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "name"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigERC20Service_GetSymbol_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"symbol"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigERC20Service_GetSymbol_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "symbol"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigERC20Service_GetDecimals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"decimals"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigERC20Service_GetDecimals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "decimals"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigERC20Service_GetTotalSupply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"total-supply"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigERC20Service_GetTotalSupply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "total-supply"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

@@ -1,0 +1,10 @@
+from: erc20
+
+params:
+  balance: utxo
+
+  token:
+    name: SomeToken
+    symbol: @
+    decimals: 2
+    total_supply: 10000000

@@ -18,21 +18,15 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
-func (this *AllowanceRequest) Validate() error {
-	if this.OwnerAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("OwnerAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.OwnerAddress))
-	}
-	if this.SpenderAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("SpenderAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.SpenderAddress))
-	}
-	return nil
-}
 func (this *ApproveRequest) Validate() error {
-	if this.OwnerAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("OwnerAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.OwnerAddress))
+	if this.Owner == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Owner", fmt.Errorf(`value '%v' must not be an empty string`, this.Owner))
 	}
-	if this.SpenderAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("SpenderAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.SpenderAddress))
+	if this.Spender == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Spender", fmt.Errorf(`value '%v' must not be an empty string`, this.Spender))
+	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
 	}
 	if !(this.Amount > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("Amount", fmt.Errorf(`value '%v' must be greater than '0'`, this.Amount))
@@ -40,11 +34,14 @@ func (this *ApproveRequest) Validate() error {
 	return nil
 }
 func (this *TransferFromRequest) Validate() error {
-	if this.OwnerAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("OwnerAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.OwnerAddress))
+	if this.Owner == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Owner", fmt.Errorf(`value '%v' must not be an empty string`, this.Owner))
 	}
-	if this.RecipientAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("RecipientAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.RecipientAddress))
+	if this.Recipient == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Recipient", fmt.Errorf(`value '%v' must not be an empty string`, this.Recipient))
+	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
 	}
 	if !(this.Amount > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("Amount", fmt.Errorf(`value '%v' must be greater than '0'`, this.Amount))
@@ -55,9 +52,21 @@ func (this *TransferFromResponse) Validate() error {
 	return nil
 }
 func (this *AllowanceId) Validate() error {
+	if this.Owner == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Owner", fmt.Errorf(`value '%v' must not be an empty string`, this.Owner))
+	}
+	if this.Spender == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Spender", fmt.Errorf(`value '%v' must not be an empty string`, this.Spender))
+	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
+	}
 	return nil
 }
 func (this *Allowance) Validate() error {
+	return nil
+}
+func (this *Operation) Validate() error {
 	return nil
 }
 func (this *Allowances) Validate() error {

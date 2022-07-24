@@ -1,0 +1,10 @@
+kind:
+  balance
+
+params:
+  - TokenType
+
+behavior:
+  - balance
+  - allowance
+  - config_erc20

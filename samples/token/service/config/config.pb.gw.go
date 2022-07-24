@@ -97,15 +97,26 @@ func request_ConfigService_GetToken_0(ctx context.Context, marshaler runtime.Mar
 		_   = err
 	)
 
-	val, ok = pathParams["token"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Token, err = runtime.StringSlice(val, ",")
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
+	}
+
+	val, ok = pathParams["group"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
+	}
+
+	protoReq.Group, err = runtime.StringSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := client.GetToken(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -124,15 +135,26 @@ func local_request_ConfigService_GetToken_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["token"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Token, err = runtime.StringSlice(val, ",")
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
+	}
+
+	val, ok = pathParams["group"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
+	}
+
+	protoReq.Group, err = runtime.StringSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := server.GetToken(ctx, &protoReq)
@@ -203,15 +225,15 @@ func request_ConfigService_GetTokenType_0(ctx context.Context, marshaler runtime
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := client.GetTokenType(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -230,15 +252,15 @@ func local_request_ConfigService_GetTokenType_0(ctx context.Context, marshaler r
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := server.GetTokenType(ctx, &protoReq)
@@ -283,15 +305,15 @@ func request_ConfigService_UpdateTokenType_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := client.UpdateTokenType(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -318,15 +340,15 @@ func local_request_ConfigService_UpdateTokenType_0(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := server.UpdateTokenType(ctx, &protoReq)
@@ -345,15 +367,15 @@ func request_ConfigService_DeleteTokenType_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := client.DeleteTokenType(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -372,15 +394,15 @@ func local_request_ConfigService_DeleteTokenType_0(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := server.DeleteTokenType(ctx, &protoReq)
@@ -399,15 +421,15 @@ func request_ConfigService_GetTokenGroups_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := client.GetTokenGroups(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -426,15 +448,15 @@ func local_request_ConfigService_GetTokenGroups_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := server.GetTokenGroups(ctx, &protoReq)
@@ -461,15 +483,15 @@ func request_ConfigService_CreateTokenGroup_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.StringSlice(val, ",")
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := client.CreateTokenGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -496,15 +518,15 @@ func local_request_ConfigService_CreateTokenGroup_0(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Name, err = runtime.StringSlice(val, ",")
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
 	msg, err := server.CreateTokenGroup(ctx, &protoReq)
@@ -523,26 +545,26 @@ func request_ConfigService_GetTokenGroup_0(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["token_name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.TokenName, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["group"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
 	}
 
-	protoReq.Name, err = runtime.StringSlice(val, ",")
+	protoReq.Group, err = runtime.StringSlice(val, ",")
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := client.GetTokenGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -561,26 +583,26 @@ func local_request_ConfigService_GetTokenGroup_0(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["token_name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.TokenName, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["group"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
 	}
 
-	protoReq.Name, err = runtime.StringSlice(val, ",")
+	protoReq.Group, err = runtime.StringSlice(val, ",")
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := server.GetTokenGroup(ctx, &protoReq)
@@ -599,26 +621,26 @@ func request_ConfigService_DeleteTokenGroup_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["token_name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.TokenName, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["group"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
 	}
 
-	protoReq.Name, err = runtime.StringSlice(val, ",")
+	protoReq.Group, err = runtime.StringSlice(val, ",")
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := client.DeleteTokenGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -637,26 +659,26 @@ func local_request_ConfigService_DeleteTokenGroup_0(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["token_name"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.TokenName, err = runtime.String(val)
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
 	}
 
-	val, ok = pathParams["name"]
+	val, ok = pathParams["group"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
 	}
 
-	protoReq.Name, err = runtime.StringSlice(val, ",")
+	protoReq.Group, err = runtime.StringSlice(val, ",")
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := server.DeleteTokenGroup(ctx, &protoReq)
@@ -1278,27 +1300,27 @@ var (
 
 	pattern_ConfigService_SetConfig_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "config"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_GetToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 0}, []string{"token", "tokens"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_GetToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"token", "tokens", "symbol", "group"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ConfigService_GetDefaultToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "default"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ConfigService_CreateTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "types"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_GetTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"token", "types", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_GetTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"token", "types", "symbol"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ConfigService_ListTokenTypes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"token", "types"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_UpdateTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"token", "types", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_UpdateTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"token", "types", "symbol"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_DeleteTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"token", "types", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_DeleteTokenType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"token", "types", "symbol"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_GetTokenGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"token", "types", "name", "groups"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_GetTokenGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"token", "types", "symbol", "groups"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_CreateTokenGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"token", "types", "name", "groups"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_CreateTokenGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"token", "types", "symbol", "groups"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_GetTokenGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"token", "tokens", "token_name", "groups", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_GetTokenGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"token", "tokens", "symbol", "groups", "group"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ConfigService_DeleteTokenGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"token", "tokens", "token_name", "groups", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ConfigService_DeleteTokenGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"token", "tokens", "symbol", "groups", "group"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

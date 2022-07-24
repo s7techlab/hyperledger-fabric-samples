@@ -18,21 +18,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
-func (this *GetBalanceRequest) Validate() error {
-	if this.Address == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("Address", fmt.Errorf(`value '%v' must not be an empty string`, this.Address))
-	}
-	return nil
-}
-func (this *ListAddressBalancesRequest) Validate() error {
-	if this.Address == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("Address", fmt.Errorf(`value '%v' must not be an empty string`, this.Address))
-	}
-	return nil
-}
 func (this *TransferRequest) Validate() error {
-	if this.RecipientAddress == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("RecipientAddress", fmt.Errorf(`value '%v' must not be an empty string`, this.RecipientAddress))
+	if this.Recipient == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Recipient", fmt.Errorf(`value '%v' must not be an empty string`, this.Recipient))
+	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
 	}
 	if !(this.Amount > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("Amount", fmt.Errorf(`value '%v' must be greater than '0'`, this.Amount))
@@ -72,7 +63,48 @@ func (this *Balances) Validate() error {
 	}
 	return nil
 }
+func (this *Operation) Validate() error {
+	return nil
+}
+func (this *TransferOperation) Validate() error {
+	if this.Sender == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Sender", fmt.Errorf(`value '%v' must not be an empty string`, this.Sender))
+	}
+	if this.Recipient == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Recipient", fmt.Errorf(`value '%v' must not be an empty string`, this.Recipient))
+	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
+	}
+	if !(this.Amount > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("Amount", fmt.Errorf(`value '%v' must be greater than '0'`, this.Amount))
+	}
+	for _, item := range this.Meta {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Meta", err)
+			}
+		}
+	}
+	return nil
+}
 func (this *BalanceOperation) Validate() error {
+	if this.Address == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Address", fmt.Errorf(`value '%v' must not be an empty string`, this.Address))
+	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
+	}
+	if !(this.Amount > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("Amount", fmt.Errorf(`value '%v' must be greater than '0'`, this.Amount))
+	}
+	for _, item := range this.Meta {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Meta", err)
+			}
+		}
+	}
 	return nil
 }
 func (this *Transferred) Validate() error {
@@ -95,5 +127,28 @@ func (this *AddMetaRequest) Validate() error {
 	return nil
 }
 func (this *Meta) Validate() error {
+	return nil
+}
+func (this *UTXOId) Validate() error {
+	return nil
+}
+func (this *UTXO) Validate() error {
+	for _, item := range this.Meta {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Meta", err)
+			}
+		}
+	}
+	return nil
+}
+func (this *UTXOs) Validate() error {
+	for _, item := range this.Items {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Items", err)
+			}
+		}
+	}
 	return nil
 }

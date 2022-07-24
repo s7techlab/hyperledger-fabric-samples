@@ -30,20 +30,20 @@ const (
 
 	BalanceServiceChaincode_GetBalance = BalanceServiceChaincodeMethodPrefix + "GetBalance"
 
-	BalanceServiceChaincode_ListBalances = BalanceServiceChaincodeMethodPrefix + "ListBalances"
+	BalanceServiceChaincode_ListAccountBalances = BalanceServiceChaincodeMethodPrefix + "ListAccountBalances"
 
-	BalanceServiceChaincode_ListAddressBalances = BalanceServiceChaincodeMethodPrefix + "ListAddressBalances"
+	BalanceServiceChaincode_ListBalances = BalanceServiceChaincodeMethodPrefix + "ListBalances"
 
 	BalanceServiceChaincode_Transfer = BalanceServiceChaincodeMethodPrefix + "Transfer"
 )
 
 // BalanceServiceChaincode chaincode methods interface
 type BalanceServiceChaincode interface {
-	GetBalance(cckit_router.Context, *GetBalanceRequest) (*Balance, error)
+	GetBalance(cckit_router.Context, *BalanceId) (*Balance, error)
+
+	ListAccountBalances(cckit_router.Context, *BalanceId) (*Balances, error)
 
 	ListBalances(cckit_router.Context, *emptypb.Empty) (*Balances, error)
-
-	ListAddressBalances(cckit_router.Context, *ListAddressBalancesRequest) (*Balances, error)
 
 	Transfer(cckit_router.Context, *TransferRequest) (*TransferResponse, error)
 }
@@ -53,21 +53,21 @@ func RegisterBalanceServiceChaincode(r *cckit_router.Group, cc BalanceServiceCha
 
 	r.Query(BalanceServiceChaincode_GetBalance,
 		func(ctx cckit_router.Context) (interface{}, error) {
-			return cc.GetBalance(ctx, ctx.Param().(*GetBalanceRequest))
+			return cc.GetBalance(ctx, ctx.Param().(*BalanceId))
 		},
-		cckit_defparam.Proto(&GetBalanceRequest{}))
+		cckit_defparam.Proto(&BalanceId{}))
+
+	r.Query(BalanceServiceChaincode_ListAccountBalances,
+		func(ctx cckit_router.Context) (interface{}, error) {
+			return cc.ListAccountBalances(ctx, ctx.Param().(*BalanceId))
+		},
+		cckit_defparam.Proto(&BalanceId{}))
 
 	r.Query(BalanceServiceChaincode_ListBalances,
 		func(ctx cckit_router.Context) (interface{}, error) {
 			return cc.ListBalances(ctx, ctx.Param().(*emptypb.Empty))
 		},
 		cckit_defparam.Proto(&emptypb.Empty{}))
-
-	r.Query(BalanceServiceChaincode_ListAddressBalances,
-		func(ctx cckit_router.Context) (interface{}, error) {
-			return cc.ListAddressBalances(ctx, ctx.Param().(*ListAddressBalancesRequest))
-		},
-		cckit_defparam.Proto(&ListAddressBalancesRequest{}))
 
 	r.Invoke(BalanceServiceChaincode_Transfer,
 		func(ctx cckit_router.Context) (interface{}, error) {
@@ -118,7 +118,7 @@ func (c *BalanceServiceGateway) ServiceDef() cckit_gateway.ServiceDef {
 	)
 }
 
-func (c *BalanceServiceGateway) GetBalance(ctx context.Context, in *GetBalanceRequest) (*Balance, error) {
+func (c *BalanceServiceGateway) GetBalance(ctx context.Context, in *BalanceId) (*Balance, error) {
 	var inMsg interface{} = in
 	if v, ok := inMsg.(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
@@ -133,6 +133,21 @@ func (c *BalanceServiceGateway) GetBalance(ctx context.Context, in *GetBalanceRe
 	}
 }
 
+func (c *BalanceServiceGateway) ListAccountBalances(ctx context.Context, in *BalanceId) (*Balances, error) {
+	var inMsg interface{} = in
+	if v, ok := inMsg.(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return nil, err
+		}
+	}
+
+	if res, err := c.Invoker().Query(ctx, BalanceServiceChaincode_ListAccountBalances, []interface{}{in}, &Balances{}); err != nil {
+		return nil, err
+	} else {
+		return res.(*Balances), nil
+	}
+}
+
 func (c *BalanceServiceGateway) ListBalances(ctx context.Context, in *emptypb.Empty) (*Balances, error) {
 	var inMsg interface{} = in
 	if v, ok := inMsg.(interface{ Validate() error }); ok {
@@ -142,21 +157,6 @@ func (c *BalanceServiceGateway) ListBalances(ctx context.Context, in *emptypb.Em
 	}
 
 	if res, err := c.Invoker().Query(ctx, BalanceServiceChaincode_ListBalances, []interface{}{in}, &Balances{}); err != nil {
-		return nil, err
-	} else {
-		return res.(*Balances), nil
-	}
-}
-
-func (c *BalanceServiceGateway) ListAddressBalances(ctx context.Context, in *ListAddressBalancesRequest) (*Balances, error) {
-	var inMsg interface{} = in
-	if v, ok := inMsg.(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return nil, err
-		}
-	}
-
-	if res, err := c.Invoker().Query(ctx, BalanceServiceChaincode_ListAddressBalances, []interface{}{in}, &Balances{}); err != nil {
 		return nil, err
 	} else {
 		return res.(*Balances), nil
@@ -238,7 +238,7 @@ func NewBalanceServiceChaincodeStubInvoker(locator *cckit_gateway.ChaincodeLocat
 	}
 }
 
-func (c *BalanceServiceChaincodeStubInvoker) GetBalance(ctx cckit_router.Context, in *GetBalanceRequest) (*Balance, error) {
+func (c *BalanceServiceChaincodeStubInvoker) GetBalance(ctx cckit_router.Context, in *BalanceId) (*Balance, error) {
 
 	var inMsg interface{} = in
 	if v, ok := inMsg.(interface{ Validate() error }); ok {
@@ -255,6 +255,23 @@ func (c *BalanceServiceChaincodeStubInvoker) GetBalance(ctx cckit_router.Context
 
 }
 
+func (c *BalanceServiceChaincodeStubInvoker) ListAccountBalances(ctx cckit_router.Context, in *BalanceId) (*Balances, error) {
+
+	var inMsg interface{} = in
+	if v, ok := inMsg.(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return nil, err
+		}
+	}
+
+	if res, err := c.Invoker.Query(ctx.Stub(), BalanceServiceChaincode_ListAccountBalances, []interface{}{in}, &Balances{}); err != nil {
+		return nil, err
+	} else {
+		return res.(*Balances), nil
+	}
+
+}
+
 func (c *BalanceServiceChaincodeStubInvoker) ListBalances(ctx cckit_router.Context, in *emptypb.Empty) (*Balances, error) {
 
 	var inMsg interface{} = in
@@ -265,23 +282,6 @@ func (c *BalanceServiceChaincodeStubInvoker) ListBalances(ctx cckit_router.Conte
 	}
 
 	if res, err := c.Invoker.Query(ctx.Stub(), BalanceServiceChaincode_ListBalances, []interface{}{in}, &Balances{}); err != nil {
-		return nil, err
-	} else {
-		return res.(*Balances), nil
-	}
-
-}
-
-func (c *BalanceServiceChaincodeStubInvoker) ListAddressBalances(ctx cckit_router.Context, in *ListAddressBalancesRequest) (*Balances, error) {
-
-	var inMsg interface{} = in
-	if v, ok := inMsg.(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return nil, err
-		}
-	}
-
-	if res, err := c.Invoker.Query(ctx.Stub(), BalanceServiceChaincode_ListAddressBalances, []interface{}{in}, &Balances{}); err != nil {
 		return nil, err
 	} else {
 		return res.(*Balances), nil

@@ -24,7 +24,7 @@
 ### Generators
 
 Generators allows to automatically build lot of useful code and docs : Golang structures,
-validators, gRPC service and client, documentation in Markdown format and Swagger specification,
+validators, gRPC service interface and client, documentation in Markdown format and Swagger specification,
 chaincode gateway for implementing API or SDK and mapper for embedding strong typed gRPC service
 to chaincode implementation.
 

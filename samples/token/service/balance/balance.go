@@ -9,51 +9,50 @@ import (
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/config"
 
 	"github.com/s7techlab/cckit/router"
-	"github.com/s7techlab/cckit/state"
 )
 
 type Service struct {
 	Account account.Getter
 	Token   config.TokenGetter
+	Store   Store
 }
 
-func New(accountResolver account.Getter, tokenGetter config.TokenGetter) *Service {
+func New(
+	accountResolver account.Getter,
+	tokenGetter config.TokenGetter,
+	store Store) *Service {
+
 	return &Service{
 		Account: accountResolver,
 		Token:   tokenGetter,
+		Store:   store,
 	}
 }
 
-func (s *Service) Store(ctx router.Context) *Store {
-	return NewStore(ctx)
-}
-
-func (s *Service) GetBalance(ctx router.Context, req *GetBalanceRequest) (*Balance, error) {
-	if err := router.ValidateRequest(req); err != nil {
+func (s *Service) GetBalance(ctx router.Context, id *BalanceId) (*Balance, error) {
+	if err := router.ValidateRequest(id); err != nil {
 		return nil, err
 	}
 
-	token, err := s.Token.GetToken(ctx, &config.TokenId{Token: req.Token})
+	_, err := s.Token.GetToken(ctx, &config.TokenId{Symbol: id.Symbol, Group: id.Group})
 	if err != nil {
 		return nil, fmt.Errorf(`get token: %w`, err)
 	}
-	return s.Store(ctx).Get(req.Address, token.Token)
+	return s.Store.Get(ctx, id)
 }
 
 func (s *Service) ListBalances(ctx router.Context, _ *emptypb.Empty) (*Balances, error) {
-	balances, err := State(ctx).List(&Balance{})
-	if err != nil {
-		return nil, err
-	}
-	return balances.(*Balances), nil
+	// empty balance id - no conditions
+	return s.ListAccountBalances(ctx, &BalanceId{})
 }
 
-func (s *Service) ListAddressBalances(ctx router.Context, req *ListAddressBalancesRequest) (*Balances, error) {
-	balances, err := State(ctx).ListWith(&Balance{}, state.Key{req.Address})
+func (s *Service) ListAccountBalances(ctx router.Context, id *BalanceId) (*Balances, error) {
+	balances, err := s.Store.List(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	return balances.(*Balances), nil
+
+	return &Balances{Items: balances}, nil
 }
 
 func (s *Service) Transfer(ctx router.Context, req *TransferRequest) (*TransferResponse, error) {
@@ -66,28 +65,37 @@ func (s *Service) Transfer(ctx router.Context, req *TransferRequest) (*TransferR
 		return nil, fmt.Errorf(`get invoker address: %w`, err)
 	}
 
-	token, err := s.Token.GetToken(ctx, &config.TokenId{Token: req.Token})
+	_, err = s.Token.GetToken(ctx, &config.TokenId{Symbol: req.Symbol, Group: req.Group})
 	if err != nil {
 		return nil, fmt.Errorf(`get token: %w`, err)
 	}
 
-	if err := s.Store(ctx).Transfer(invokerAddress.Address, req.RecipientAddress, token.Token, req.Amount); err != nil {
+	if err := s.Store.Transfer(ctx, &TransferOperation{
+		Sender:    invokerAddress.Address,
+		Recipient: req.Recipient,
+		Symbol:    req.Symbol,
+		Group:     req.Group,
+		Amount:    req.Amount,
+		Meta:      nil,
+	}); err != nil {
 		return nil, err
 	}
 
 	if err = Event(ctx).Set(&Transferred{
-		SenderAddress:    invokerAddress.Address,
-		RecipientAddress: req.RecipientAddress,
-		Token:            token.Token,
-		Amount:           req.Amount,
+		Sender:    invokerAddress.Address,
+		Recipient: req.Recipient,
+		Symbol:    req.Symbol,
+		Group:     req.Group,
+		Amount:    req.Amount,
 	}); err != nil {
 		return nil, err
 	}
 
 	return &TransferResponse{
-		SenderAddress:    invokerAddress.Address,
-		RecipientAddress: req.RecipientAddress,
-		Token:            token.Token,
-		Amount:           req.Amount,
+		Sender:    invokerAddress.Address,
+		Recipient: req.Recipient,
+		Symbol:    req.Symbol,
+		Group:     req.Group,
+		Amount:    req.Amount,
 	}, nil
 }

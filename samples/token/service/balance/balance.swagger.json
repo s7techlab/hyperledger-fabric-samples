@@ -35,7 +35,7 @@
     },
     "/token/balances/{address}": {
       "get": {
-        "operationId": "BalanceService_ListAddressBalances",
+        "operationId": "BalanceService_ListAccountBalances",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -56,6 +56,22 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -63,7 +79,7 @@
         ]
       }
     },
-    "/token/balances/{address}/{token}": {
+    "/token/balances/{address}/{symbol}/{group}": {
       "get": {
         "summary": "Returns the amount of tokens owned by account.",
         "operationId": "BalanceService_GetBalance",
@@ -89,7 +105,13 @@
             "type": "string"
           },
           {
-            "name": "token",
+            "name": "symbol",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "group",
             "in": "path",
             "required": true,
             "type": "array",
@@ -157,7 +179,10 @@
         "address": {
           "type": "string"
         },
-        "token": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"
@@ -168,7 +193,7 @@
           "format": "uint64"
         }
       },
-      "title": "Balance"
+      "title": "State: Balance"
     },
     "balanceBalances": {
       "type": "object",
@@ -180,7 +205,7 @@
           }
         }
       },
-      "title": "List"
+      "title": "List: balances"
     },
     "balanceMeta": {
       "type": "object",
@@ -196,10 +221,13 @@
     "balanceTransferRequest": {
       "type": "object",
       "properties": {
-        "recipient_address": {
+        "recipient": {
           "type": "string"
         },
-        "token": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"
@@ -220,13 +248,16 @@
     "balanceTransferResponse": {
       "type": "object",
       "properties": {
-        "sender_address": {
+        "sender": {
           "type": "string"
         },
-        "recipient_address": {
+        "recipient": {
           "type": "string"
         },
-        "token": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"

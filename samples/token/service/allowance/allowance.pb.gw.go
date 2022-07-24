@@ -34,7 +34,7 @@ var _ = descriptor.ForMessage
 var _ = metadata.Join
 
 func request_AllowanceService_GetAllowance_0(ctx context.Context, marshaler runtime.Marshaler, client AllowanceServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AllowanceRequest
+	var protoReq AllowanceId
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -44,37 +44,48 @@ func request_AllowanceService_GetAllowance_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["owner_address"]
+	val, ok = pathParams["owner"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "owner_address")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "owner")
 	}
 
-	protoReq.OwnerAddress, err = runtime.String(val)
+	protoReq.Owner, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "owner_address", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "owner", err)
 	}
 
-	val, ok = pathParams["spender_address"]
+	val, ok = pathParams["spender"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "spender_address")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "spender")
 	}
 
-	protoReq.SpenderAddress, err = runtime.String(val)
+	protoReq.Spender, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "spender_address", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "spender", err)
 	}
 
-	val, ok = pathParams["token"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Token, err = runtime.StringSlice(val, ",")
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
+	}
+
+	val, ok = pathParams["group"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
+	}
+
+	protoReq.Group, err = runtime.StringSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := client.GetAllowance(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -83,7 +94,7 @@ func request_AllowanceService_GetAllowance_0(ctx context.Context, marshaler runt
 }
 
 func local_request_AllowanceService_GetAllowance_0(ctx context.Context, marshaler runtime.Marshaler, server AllowanceServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AllowanceRequest
+	var protoReq AllowanceId
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -93,37 +104,48 @@ func local_request_AllowanceService_GetAllowance_0(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["owner_address"]
+	val, ok = pathParams["owner"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "owner_address")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "owner")
 	}
 
-	protoReq.OwnerAddress, err = runtime.String(val)
+	protoReq.Owner, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "owner_address", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "owner", err)
 	}
 
-	val, ok = pathParams["spender_address"]
+	val, ok = pathParams["spender"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "spender_address")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "spender")
 	}
 
-	protoReq.SpenderAddress, err = runtime.String(val)
+	protoReq.Spender, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "spender_address", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "spender", err)
 	}
 
-	val, ok = pathParams["token"]
+	val, ok = pathParams["symbol"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "symbol")
 	}
 
-	protoReq.Token, err = runtime.StringSlice(val, ",")
+	protoReq.Symbol, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "symbol", err)
+	}
+
+	val, ok = pathParams["group"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group")
+	}
+
+	protoReq.Group, err = runtime.StringSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group", err)
 	}
 
 	msg, err := server.GetAllowance(ctx, &protoReq)
@@ -383,7 +405,7 @@ func RegisterAllowanceServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 }
 
 var (
-	pattern_AllowanceService_GetAllowance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"allowance", "owner_address", "spender_address", "token"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_AllowanceService_GetAllowance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"allowance", "owner", "spender", "symbol", "group"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_AllowanceService_Approve_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"approve"}, "", runtime.AssumeColonVerbOpt(true)))
 

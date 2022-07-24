@@ -36,7 +36,7 @@ const (
 
 // AllowanceServiceChaincode chaincode methods interface
 type AllowanceServiceChaincode interface {
-	GetAllowance(cckit_router.Context, *AllowanceRequest) (*Allowance, error)
+	GetAllowance(cckit_router.Context, *AllowanceId) (*Allowance, error)
 
 	Approve(cckit_router.Context, *ApproveRequest) (*Allowance, error)
 
@@ -48,9 +48,9 @@ func RegisterAllowanceServiceChaincode(r *cckit_router.Group, cc AllowanceServic
 
 	r.Query(AllowanceServiceChaincode_GetAllowance,
 		func(ctx cckit_router.Context) (interface{}, error) {
-			return cc.GetAllowance(ctx, ctx.Param().(*AllowanceRequest))
+			return cc.GetAllowance(ctx, ctx.Param().(*AllowanceId))
 		},
-		cckit_defparam.Proto(&AllowanceRequest{}))
+		cckit_defparam.Proto(&AllowanceId{}))
 
 	r.Invoke(AllowanceServiceChaincode_Approve,
 		func(ctx cckit_router.Context) (interface{}, error) {
@@ -107,7 +107,7 @@ func (c *AllowanceServiceGateway) ServiceDef() cckit_gateway.ServiceDef {
 	)
 }
 
-func (c *AllowanceServiceGateway) GetAllowance(ctx context.Context, in *AllowanceRequest) (*Allowance, error) {
+func (c *AllowanceServiceGateway) GetAllowance(ctx context.Context, in *AllowanceId) (*Allowance, error) {
 	var inMsg interface{} = in
 	if v, ok := inMsg.(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
@@ -212,7 +212,7 @@ func NewAllowanceServiceChaincodeStubInvoker(locator *cckit_gateway.ChaincodeLoc
 	}
 }
 
-func (c *AllowanceServiceChaincodeStubInvoker) GetAllowance(ctx cckit_router.Context, in *AllowanceRequest) (*Allowance, error) {
+func (c *AllowanceServiceChaincodeStubInvoker) GetAllowance(ctx cckit_router.Context, in *AllowanceId) (*Allowance, error) {
 
 	var inMsg interface{} = in
 	if v, ok := inMsg.(interface{ Validate() error }); ok {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/s7techlab/cckit/router"
+	"github.com/s7techlab/cckit/state"
 
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/balance"
 )
@@ -24,17 +25,26 @@ func NewService(balance *balance.Service) *Service {
 	}
 }
 
-func (s *Service) GetAllowance(ctx router.Context, req *AllowanceRequest) (*Allowance, error) {
-	if err := router.ValidateRequest(req); err != nil {
+func (s *Service) GetAllowance(ctx router.Context, id *AllowanceId) (*Allowance, error) {
+	if err := router.ValidateRequest(id); err != nil {
 		return nil, err
 	}
 
-	allowance, err := NewStore(ctx).Get(req.OwnerAddress, req.SpenderAddress, req.Token)
+	allowance, err := State(ctx).Get(id, &Allowance{})
 	if err != nil {
-		return nil, err
+		if errors.Is(err, state.ErrKeyNotFound) {
+			return &Allowance{
+				Owner:   id.Owner,
+				Spender: id.Spender,
+				Symbol:  id.Symbol,
+				Group:   id.Group,
+				Amount:  0,
+			}, nil
+		}
+		return nil, fmt.Errorf(`get allowance: %w`, err)
 	}
 
-	return allowance, nil
+	return allowance.(*Allowance), nil
 }
 
 func (s *Service) Approve(ctx router.Context, req *ApproveRequest) (*Allowance, error) {
@@ -47,19 +57,26 @@ func (s *Service) Approve(ctx router.Context, req *ApproveRequest) (*Allowance, 
 		return nil, fmt.Errorf(`get invoker address: %w`, err)
 	}
 
-	if invokerAddress.Address != req.OwnerAddress {
+	if invokerAddress.Address != req.Owner {
 		return nil, ErrOwnerOnly
 	}
 
-	allowance, err := NewStore(ctx).Set(req.OwnerAddress, req.SpenderAddress, req.Token, req.Amount)
-	if err != nil {
-		return nil, err
+	allowance := &Allowance{
+		Owner:   req.Owner,
+		Spender: req.Spender,
+		Symbol:  req.Symbol,
+		Group:   req.Group,
+		Amount:  req.Amount,
+	}
+
+	if err := State(ctx).Put(allowance); err != nil {
+		return nil, fmt.Errorf(`set allowance: %w`, err)
 	}
 
 	if err = Event(ctx).Set(&Approved{
-		OwnerAddress:   req.OwnerAddress,
-		SpenderAddress: req.SpenderAddress,
-		Amount:         req.Amount,
+		Owner:   req.Owner,
+		Spender: req.Spender,
+		Amount:  req.Amount,
 	}); err != nil {
 		return nil, err
 	}
@@ -77,7 +94,12 @@ func (s *Service) TransferFrom(ctx router.Context, req *TransferFromRequest) (*T
 		return nil, err
 	}
 
-	allowance, err := NewStore(ctx).Get(req.OwnerAddress, spenderAddress.Address, req.Token)
+	allowance, err := s.GetAllowance(ctx, &AllowanceId{
+		Owner:   req.Owner,
+		Spender: spenderAddress.Address,
+		Symbol:  req.Symbol,
+		Group:   req.Group,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -87,22 +109,34 @@ func (s *Service) TransferFrom(ctx router.Context, req *TransferFromRequest) (*T
 			req.Amount, allowance.Amount, ErrAllowanceInsufficient)
 	}
 
-	if err = s.balance.Store(ctx).Transfer(req.OwnerAddress, req.RecipientAddress, req.Token, req.Amount); err != nil {
+	allowance.Amount -= req.Amount
+	// sub from allowance
+	if err := State(ctx).Put(allowance); err != nil {
+		return nil, fmt.Errorf(`update allowance: %w`, err)
+	}
+
+	if err = s.balance.Store.Transfer(ctx, &balance.TransferOperation{
+		Sender:    req.Owner,
+		Recipient: req.Recipient,
+		Symbol:    req.Symbol,
+		Group:     req.Group,
+		Amount:    req.Amount,
+	}); err != nil {
 		return nil, err
 	}
 
 	if err = Event(ctx).Set(&TransferredFrom{
-		OwnerAddress:     req.OwnerAddress,
-		SpenderAddress:   spenderAddress.Address,
-		RecipientAddress: req.RecipientAddress,
-		Amount:           0,
+		Owner:     req.Owner,
+		Spender:   spenderAddress.Address,
+		Recipient: req.Recipient,
+		Amount:    req.Amount,
 	}); err != nil {
 		return nil, err
 	}
 
 	return &TransferFromResponse{
-		OwnerAddress:     req.OwnerAddress,
-		RecipientAddress: req.RecipientAddress,
-		Amount:           req.Amount,
+		Owner:     req.Owner,
+		Recipient: req.Recipient,
+		Amount:    req.Amount,
 	}, nil
 }

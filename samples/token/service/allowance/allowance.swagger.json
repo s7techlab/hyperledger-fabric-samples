@@ -11,7 +11,7 @@
     "application/json"
   ],
   "paths": {
-    "/allowance/{owner_address}/{spender_address}/{token}": {
+    "/allowance/{owner}/{spender}/{symbol}/{group}": {
       "get": {
         "summary": "Returns the remaining number of tokens that spender will be allowed to spend on behalf of owner through transfersender.\nThis is zero by default.",
         "operationId": "AllowanceService_GetAllowance",
@@ -31,19 +31,25 @@
         },
         "parameters": [
           {
-            "name": "owner_address",
+            "name": "owner",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "spender_address",
+            "name": "spender",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "token",
+            "name": "symbol",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "group",
             "in": "path",
             "required": true,
             "type": "array",
@@ -110,13 +116,16 @@
     "allowanceAllowance": {
       "type": "object",
       "properties": {
-        "owner_address": {
+        "owner": {
           "type": "string"
         },
-        "spender_address": {
+        "spender": {
           "type": "string"
         },
-        "token": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"
@@ -127,18 +136,21 @@
           "format": "uint64"
         }
       },
-      "title": "Allowance"
+      "title": "State: Allowance"
     },
     "allowanceTransferFromResponse": {
       "type": "object",
       "properties": {
-        "owner_address": {
+        "owner": {
           "type": "string"
         },
-        "recipient_address": {
+        "recipient": {
           "type": "string"
         },
-        "token": {
+        "symbol": {
+          "type": "string"
+        },
+        "group": {
           "type": "array",
           "items": {
             "type": "string"

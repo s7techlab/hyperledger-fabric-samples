@@ -14,10 +14,12 @@ import (
 )
 
 var (
+	Symbol = `@`
+
 	// 	Token  Static hardcoded token
 	Token = &config.CreateTokenTypeRequest{
 		Name:        `SomeToken`,
-		Symbol:      `@`,
+		Symbol:      Symbol,
 		Decimals:    2,
 		TotalSupply: 10000000,
 	}
@@ -35,14 +37,14 @@ func Gateways(instance gateway.ChaincodeInstance) []gateway.Service {
 	return gateways
 }
 
-func New() (*router.Chaincode, error) {
-	r := router.New(`erc20`)
+func New(name string, store balance.Store) (*router.Chaincode, error) {
+	r := router.New(name)
 
 	// accountSvc resolves address as base58( invoker.Cert.PublicKey )
 	accountSvc := account.NewLocalService()
 	configSvc := config.NewStateService()
-	// Balance management service
-	balanceSvc := balance.New(accountSvc, configSvc)
+	// Balance management service with Account storage model
+	balanceSvc := balance.New(accountSvc, configSvc, balance.NewUTXOStore())
 	// Allowance management service
 	allowanceSvc := allowance.NewService(balanceSvc)
 
@@ -50,7 +52,7 @@ func New() (*router.Chaincode, error) {
 
 	r.Init(func(ctx router.Context) (interface{}, error) {
 		// add token definition to state if not exists
-		token, err := config.CreateDefaultToken(ctx, configSvc, Token)
+		tokenId, err := config.CreateDefaultToken(ctx, configSvc, Token)
 		if err != nil {
 			if errors.Is(err, config.ErrTokenAlreadyExists) {
 				return nil, nil
@@ -65,7 +67,13 @@ func New() (*router.Chaincode, error) {
 		}
 
 		// add  `TotalSupply` to chaincode first committer
-		if err = balance.NewStore(ctx).Add(ownerAddress.Address, token, Token.TotalSupply); err != nil {
+		if err = balanceSvc.Store.Mint(ctx, &balance.BalanceOperation{
+			Address: ownerAddress.Address,
+			Symbol:  tokenId.Symbol,
+			Group:   tokenId.Group,
+			Amount:  Token.TotalSupply,
+			Meta:    nil,
+		}); err != nil {
 			return nil, err
 		}
 

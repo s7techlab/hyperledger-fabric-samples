@@ -10,9 +10,9 @@ import "mwitkow/go-proto-validators/validator.proto";
 service AllowanceService {
   // Returns the remaining number of tokens that spender will be allowed to spend on behalf of owner through transfersender.
   // This is zero by default.
-  rpc GetAllowance (AllowanceRequest) returns (Allowance) {
+  rpc GetAllowance (AllowanceId) returns (Allowance) {
     option (google.api.http) = {
-      get: "/allowance/{owner_address}/{spender_address}/{token}"
+      get: "/allowance/{owner}/{spender}/{symbol}/{group}"
     };
   }
 
@@ -33,65 +33,75 @@ service AllowanceService {
   }
 }
 
-message AllowanceRequest {
-  string owner_address = 1 [(validator.field) = {string_not_empty : true}];
-  string spender_address = 2 [(validator.field) = {string_not_empty : true}];
-  repeated string token = 3;
-}
-
 message ApproveRequest {
-  string owner_address = 1 [(validator.field) = {string_not_empty : true}];
-  string spender_address = 2 [(validator.field) = {string_not_empty : true}];
-  uint64 amount = 3 [(validator.field) = {int_gt: 0}];
-  repeated string token = 4;
+  string owner = 1 [(validator.field) = {string_not_empty : true}];
+  string spender = 2 [(validator.field) = {string_not_empty : true}];
+  string symbol = 3 [(validator.field) = {string_not_empty : true}];
+  repeated string group = 4;
+  uint64 amount = 5 [(validator.field) = {int_gt: 0}];
 }
 
 message TransferFromRequest {
-  string owner_address = 1 [(validator.field) = {string_not_empty : true}];
-  string recipient_address = 2 [(validator.field) = {string_not_empty : true}];
-  uint64 amount = 3 [(validator.field) = {int_gt: 0}];
-  repeated string token = 4;
+  string owner = 1 [(validator.field) = {string_not_empty : true}];
+  string recipient = 2 [(validator.field) = {string_not_empty : true}];
+  string symbol = 3 [(validator.field) = {string_not_empty : true}];
+  repeated string group = 4;
+  uint64 amount = 5 [(validator.field) = {int_gt: 0}];
 }
 
 message TransferFromResponse {
-  string owner_address = 1;
-  string recipient_address = 2;
-  repeated string token = 3;
-  uint64 amount = 4;
+  string owner = 1;
+  string recipient = 2;
+  string symbol = 3 ;
+  repeated string group = 4;
+  uint64 amount = 5;
 }
 
-// Allowance identifier
+// Id: Allowance identifier
 message AllowanceId {
-  string owner_address = 1;
-  string spender_address = 2;
-  repeated string token = 3;
+  string owner = 1 [(validator.field) = {string_not_empty : true}];
+  string spender = 2 [(validator.field) = {string_not_empty : true}];
+  string symbol = 3 [(validator.field) = {string_not_empty : true}];
+  repeated string group = 4;
 }
 
-// Allowance
+// State: Allowance
 message Allowance {
-  string  owner_address = 1;
-  string  spender_address = 2;
-  repeated string token = 3;
-  uint64 amount = 4;
+  string  owner = 1;
+  string  spender = 2;
+  string symbol = 3 ;
+  repeated string group = 4;
+  uint64 amount = 5;
 }
 
+message Operation {
+  string  owner = 1;
+  string  spender = 2;
+  string symbol = 3 ;
+  repeated string group = 4;
+  uint64 amount = 5;
+}
+
+// List:
 message Allowances {
   repeated Allowance items = 1;
 }
 
-// Approved event is emitted when Approve method has been invoked
+// Event: Approved event is emitted when Approve method has been invoked
 message Approved  {
-  string owner_address = 1;
-  string spender_address = 2;
-  repeated string token = 3;
-  uint64 amount = 4;
+  string owner = 1;
+  string spender = 2;
+  string symbol = 3 ;
+  repeated string group = 4;
+  uint64 amount = 5;
 }
 
-// TransferredFrom event is emitted when TransferFrom method has been invoked
+// Event: TransferredFrom event is emitted when TransferFrom method has been invoked
 message TransferredFrom  {
-  string owner_address = 1;
-  string spender_address = 2;
-  string recipient_address = 3;
-  repeated string token = 4;
-  uint64 amount = 5;
+  string owner = 1;
+  string spender = 2;
+  string recipient = 3;
+  string symbol = 4 ;
+  repeated string group = 5;
+  uint64 amount = 6;
 }
