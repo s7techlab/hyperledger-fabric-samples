@@ -15,6 +15,7 @@ import (
 	"github.com/s7techlab/cckit/testing"
 
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/chaincode/erc20"
+	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/balance"
 )
 
 const (
@@ -34,7 +35,7 @@ func main() {
 
 	// Create mock for commercial paper chaincode invocation
 	// Commercial paper chaincode instance
-	cc, err := erc20.New()
+	cc, err := erc20.New(`erc-20`, balance.NewUTXOStore())
 	if err != nil {
 		log.Fatalln(err)
 	}
