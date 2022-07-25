@@ -41,10 +41,10 @@ var _ = Describe(`CommercialPaper`, func() {
 
 	BeforeSuite(func() {
 
-		ccImpl, err = chaincode.NewCC()
+		ccImpl, err = chaincode.New()
 		Expect(err).NotTo(HaveOccurred())
 
-		ccEncImpl, err = chaincode.NewCCEncrypted()
+		ccEncImpl, err = chaincode.NewEncrypted()
 		Expect(err).NotTo(HaveOccurred())
 
 		mockstub = testcc.NewMockStub(`cpaper_as_service`, ccImpl)
