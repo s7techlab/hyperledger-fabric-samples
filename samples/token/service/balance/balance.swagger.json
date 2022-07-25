@@ -159,6 +159,38 @@
           "BalanceService"
         ]
       }
+    },
+    "/token/transfer-batch": {
+      "post": {
+        "operationId": "BalanceService_TransferBatch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/balanceTransferBatchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/balanceTransferBatchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BalanceService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -215,6 +247,28 @@
         },
         "value": {
           "type": "string"
+        }
+      }
+    },
+    "balanceTransferBatchRequest": {
+      "type": "object",
+      "properties": {
+        "transfers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/balanceTransferRequest"
+          }
+        }
+      }
+    },
+    "balanceTransferBatchResponse": {
+      "type": "object",
+      "properties": {
+        "transfers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/balanceTransferResponse"
+          }
         }
       }
     },

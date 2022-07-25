@@ -55,8 +55,8 @@ func (s *Service) ListAccountBalances(ctx router.Context, id *BalanceId) (*Balan
 	return &Balances{Items: balances}, nil
 }
 
-func (s *Service) Transfer(ctx router.Context, req *TransferRequest) (*TransferResponse, error) {
-	if err := router.ValidateRequest(req); err != nil {
+func (s *Service) Transfer(ctx router.Context, transfer *TransferRequest) (*TransferResponse, error) {
+	if err := router.ValidateRequest(transfer); err != nil {
 		return nil, err
 	}
 
@@ -65,37 +65,101 @@ func (s *Service) Transfer(ctx router.Context, req *TransferRequest) (*TransferR
 		return nil, fmt.Errorf(`get invoker address: %w`, err)
 	}
 
-	_, err = s.Token.GetToken(ctx, &config.TokenId{Symbol: req.Symbol, Group: req.Group})
+	_, err = s.Token.GetToken(ctx, &config.TokenId{Symbol: transfer.Symbol, Group: transfer.Group})
 	if err != nil {
 		return nil, fmt.Errorf(`get token: %w`, err)
 	}
 
 	if err := s.Store.Transfer(ctx, &TransferOperation{
 		Sender:    invokerAddress.Address,
-		Recipient: req.Recipient,
-		Symbol:    req.Symbol,
-		Group:     req.Group,
-		Amount:    req.Amount,
-		Meta:      nil,
+		Recipient: transfer.Recipient,
+		Symbol:    transfer.Symbol,
+		Group:     transfer.Group,
+		Amount:    transfer.Amount,
+		Meta:      transfer.Meta,
 	}); err != nil {
 		return nil, err
 	}
 
 	if err = Event(ctx).Set(&Transferred{
 		Sender:    invokerAddress.Address,
-		Recipient: req.Recipient,
-		Symbol:    req.Symbol,
-		Group:     req.Group,
-		Amount:    req.Amount,
+		Recipient: transfer.Recipient,
+		Symbol:    transfer.Symbol,
+		Group:     transfer.Group,
+		Amount:    transfer.Amount,
 	}); err != nil {
 		return nil, err
 	}
 
 	return &TransferResponse{
 		Sender:    invokerAddress.Address,
-		Recipient: req.Recipient,
-		Symbol:    req.Symbol,
-		Group:     req.Group,
-		Amount:    req.Amount,
+		Recipient: transfer.Recipient,
+		Symbol:    transfer.Symbol,
+		Group:     transfer.Group,
+		Amount:    transfer.Amount,
+	}, nil
+}
+
+func (s *Service) TransferBatch(ctx router.Context, transferBatch *TransferBatchRequest) (*TransferBatchResponse, error) {
+	if err := router.ValidateRequest(transferBatch); err != nil {
+		return nil, err
+	}
+
+	invokerAddress, err := s.Account.GetInvokerAddress(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf(`get invoker address: %w`, err)
+	}
+
+	// check only first
+	_, err = s.Token.GetToken(ctx, &config.TokenId{
+		Symbol: transferBatch.Transfers[0].Symbol, Group: transferBatch.Transfers[0].Group})
+	if err != nil {
+		return nil, fmt.Errorf(`get token: %w`, err)
+	}
+
+	var (
+		operations []*TransferOperation
+		events     []*Transferred
+		responses  []*TransferResponse
+	)
+
+	for _, t := range transferBatch.Transfers {
+		operations = append(operations, &TransferOperation{
+			Sender:    invokerAddress.Address,
+			Recipient: t.Recipient,
+			Symbol:    t.Symbol,
+			Group:     t.Group,
+			Amount:    t.Amount,
+			Meta:      t.Meta,
+		})
+
+		events = append(events, &Transferred{
+			Sender:    invokerAddress.Address,
+			Recipient: t.Recipient,
+			Symbol:    t.Symbol,
+			Group:     t.Group,
+			Amount:    t.Amount,
+		})
+
+		responses = append(responses, &TransferResponse{
+			Sender:    invokerAddress.Address,
+			Recipient: t.Recipient,
+			Symbol:    t.Symbol,
+			Group:     t.Group,
+			Amount:    t.Amount,
+		})
+	}
+	if err := s.Store.TransferBatch(ctx, operations); err != nil {
+		return nil, err
+	}
+
+	if err = Event(ctx).Set(&TransferredBatch{
+		Transfers: events,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &TransferBatchResponse{
+		Transfers: responses,
 	}, nil
 }

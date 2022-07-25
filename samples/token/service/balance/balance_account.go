@@ -71,9 +71,15 @@ func (s *AccountStore) Transfer(ctx router.Context, transfer *TransferOperation)
 	return nil
 }
 
-func (s *AccountStore) TransferBatch(context router.Context, operations []*TransferOperation) error {
-	//TODO implement me
-	panic("implement me")
+func (s *AccountStore) TransferBatch(ctx router.Context, transfers []*TransferOperation) error {
+	// todo: COUNT TOTAL AMOUNT !!!
+	for _, t := range transfers {
+		if err := s.Transfer(ctx, t); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *AccountStore) Mint(ctx router.Context, op *BalanceOperation) error {

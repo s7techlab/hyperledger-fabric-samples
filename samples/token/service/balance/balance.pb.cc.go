@@ -35,6 +35,8 @@ const (
 	BalanceServiceChaincode_ListBalances = BalanceServiceChaincodeMethodPrefix + "ListBalances"
 
 	BalanceServiceChaincode_Transfer = BalanceServiceChaincodeMethodPrefix + "Transfer"
+
+	BalanceServiceChaincode_TransferBatch = BalanceServiceChaincodeMethodPrefix + "TransferBatch"
 )
 
 // BalanceServiceChaincode chaincode methods interface
@@ -46,6 +48,8 @@ type BalanceServiceChaincode interface {
 	ListBalances(cckit_router.Context, *emptypb.Empty) (*Balances, error)
 
 	Transfer(cckit_router.Context, *TransferRequest) (*TransferResponse, error)
+
+	TransferBatch(cckit_router.Context, *TransferBatchRequest) (*TransferBatchResponse, error)
 }
 
 // RegisterBalanceServiceChaincode registers service methods as chaincode router handlers
@@ -74,6 +78,12 @@ func RegisterBalanceServiceChaincode(r *cckit_router.Group, cc BalanceServiceCha
 			return cc.Transfer(ctx, ctx.Param().(*TransferRequest))
 		},
 		cckit_defparam.Proto(&TransferRequest{}))
+
+	r.Invoke(BalanceServiceChaincode_TransferBatch,
+		func(ctx cckit_router.Context) (interface{}, error) {
+			return cc.TransferBatch(ctx, ctx.Param().(*TransferBatchRequest))
+		},
+		cckit_defparam.Proto(&TransferBatchRequest{}))
 
 	return nil
 }
@@ -175,6 +185,21 @@ func (c *BalanceServiceGateway) Transfer(ctx context.Context, in *TransferReques
 		return nil, err
 	} else {
 		return res.(*TransferResponse), nil
+	}
+}
+
+func (c *BalanceServiceGateway) TransferBatch(ctx context.Context, in *TransferBatchRequest) (*TransferBatchResponse, error) {
+	var inMsg interface{} = in
+	if v, ok := inMsg.(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return nil, err
+		}
+	}
+
+	if res, err := c.Invoker().Invoke(ctx, BalanceServiceChaincode_TransferBatch, []interface{}{in}, &TransferBatchResponse{}); err != nil {
+		return nil, err
+	} else {
+		return res.(*TransferBatchResponse), nil
 	}
 }
 
@@ -290,6 +315,12 @@ func (c *BalanceServiceChaincodeStubInvoker) ListBalances(ctx cckit_router.Conte
 }
 
 func (c *BalanceServiceChaincodeStubInvoker) Transfer(ctx cckit_router.Context, in *TransferRequest) (*TransferResponse, error) {
+
+	return nil, cckit_gateway.ErrInvokeMethodNotAllowed
+
+}
+
+func (c *BalanceServiceChaincodeStubInvoker) TransferBatch(ctx cckit_router.Context, in *TransferBatchRequest) (*TransferBatchResponse, error) {
 
 	return nil, cckit_gateway.ErrInvokeMethodNotAllowed
 

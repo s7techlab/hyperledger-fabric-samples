@@ -47,6 +47,29 @@ func (this *TransferResponse) Validate() error {
 	}
 	return nil
 }
+func (this *TransferBatchRequest) Validate() error {
+	if len(this.Transfers) < 1 {
+		return github_com_mwitkow_go_proto_validators.FieldError("Transfers", fmt.Errorf(`value '%v' must contain at least 1 elements`, this.Transfers))
+	}
+	for _, item := range this.Transfers {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Transfers", err)
+			}
+		}
+	}
+	return nil
+}
+func (this *TransferBatchResponse) Validate() error {
+	for _, item := range this.Transfers {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Transfers", err)
+			}
+		}
+	}
+	return nil
+}
 func (this *BalanceId) Validate() error {
 	return nil
 }
@@ -112,6 +135,16 @@ func (this *Transferred) Validate() error {
 		if item != nil {
 			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
 				return github_com_mwitkow_go_proto_validators.FieldError("Meta", err)
+			}
+		}
+	}
+	return nil
+}
+func (this *TransferredBatch) Validate() error {
+	for _, item := range this.Transfers {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Transfers", err)
 			}
 		}
 	}

@@ -38,6 +38,13 @@ service BalanceService {
       body: "*"
     };
   }
+
+  rpc TransferBatch (TransferBatchRequest) returns (TransferBatchResponse) {
+    option (google.api.http) = {
+      post: "/token/transfer-batch"
+      body: "*"
+    };
+  }
 }
 
 message TransferRequest  {
@@ -55,6 +62,14 @@ message TransferResponse {
   repeated string group = 4;
   uint64 amount = 5;
   repeated Meta meta = 6;
+}
+
+message TransferBatchRequest  {
+  repeated TransferRequest transfers = 1 [(validator.field) = {repeated_count_min : 1}];
+}
+
+message TransferBatchResponse  {
+  repeated TransferResponse transfers = 1;
 }
 
 // Identifier: Balance
@@ -118,6 +133,11 @@ message Transferred  {
   repeated string group = 4;
   uint64 amount = 5;
   repeated Meta meta = 6;
+}
+
+// TransferredBatch event is emitted when TransferBatch method has been invoked
+message TransferredBatch  {
+  repeated Transferred transfers = 1;
 }
 
 message AddMetaRequest {

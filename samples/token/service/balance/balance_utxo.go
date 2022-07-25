@@ -138,7 +138,6 @@ func (u *UTXOStore) Transfer(ctx router.Context, transfer *TransferOperation) er
 }
 
 func (u *UTXOStore) TransferBatch(ctx router.Context, transfers []*TransferOperation) error {
-
 	var (
 		sender, symbol string
 		group          []string

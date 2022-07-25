@@ -29,7 +29,8 @@ var (
 		)
 
 	EventMappings = m.EventMappings{}.
-			Add(&Transferred{})
+			Add(&Transferred{}).
+			Add(&TransferredBatch{})
 )
 
 func UTXOKey(utxo *UTXO) state.Key {

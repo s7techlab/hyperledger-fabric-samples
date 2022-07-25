@@ -119,8 +119,9 @@ func init() {
 
 			})
 
+			var transferAmount uint64 = 100
+
 			Context(`transfer`, func() {
-				var transferAmount uint64 = 100
 
 				It(`Disallow to transfer balance by user with zero balance`, func() {
 					expectcc.ResponseError(
@@ -159,6 +160,46 @@ func init() {
 					Expect(b.Amount).To(Equal(transferAmount))
 				})
 
+			})
+
+			//todo: REFACTOR with new cc instance
+			Context(`transfer batch `, func() {
+				It(`Allow to transfer to 2 addresses`, func() {
+					r := expectcc.PayloadIs(
+						cc.From(ownerIdentity).
+							Invoke(balance.BalanceServiceChaincode_TransferBatch,
+								&balance.TransferBatchRequest{
+									Transfers: []*balance.TransferRequest{{
+										Recipient: user1Address,
+										Symbol:    erc20.Symbol,
+										Amount:    50,
+									}, {
+										Recipient: user2Address,
+										Symbol:    erc20.Symbol,
+										Amount:    150,
+									}}}),
+						&balance.TransferBatchResponse{}).(*balance.TransferBatchResponse)
+
+					Expect(r.Transfers).To(HaveLen(2))
+				})
+
+				It(`Allow to get new non zero balance`, func() {
+					b := expectcc.PayloadIs(
+						cc.From(user1Identity).
+							Query(balance.BalanceServiceChaincode_GetBalance,
+								&balance.BalanceId{Address: user1Address, Symbol: erc20.Symbol}),
+						&balance.Balance{}).(*balance.Balance)
+
+					Expect(b.Amount).To(Equal(transferAmount + 50))
+
+					b = expectcc.PayloadIs(
+						cc.From(user2Identity).
+							Query(balance.BalanceServiceChaincode_GetBalance,
+								&balance.BalanceId{Address: user2Address, Symbol: erc20.Symbol}),
+						&balance.Balance{}).(*balance.Balance)
+
+					Expect(b.Amount).To(Equal(uint64(150)))
+				})
 			})
 
 			Context(`Allowance`, func() {
