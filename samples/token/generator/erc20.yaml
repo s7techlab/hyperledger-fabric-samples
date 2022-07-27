@@ -8,3 +8,4 @@ behavior:
   - balance
   - allowance
   - config_erc20
+  - burnable

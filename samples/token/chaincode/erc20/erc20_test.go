@@ -17,6 +17,7 @@ import (
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/account"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/allowance"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/balance"
+	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/burnable"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/config_erc20"
 )
 
@@ -270,6 +271,35 @@ func init() {
 					Expect(t.Recipient).To(Equal(spenderAddress))
 					Expect(t.Amount).To(Equal(allowAmount))
 				})
+			})
+
+			Context(`Burn`, func() {
+
+				var burnAmount uint64 = 75
+
+				It(`Allow to burn by owner`, func() {
+					b := expectcc.PayloadIs(
+						cc.From(user2Identity).
+							Invoke(burnable.BurnableServiceChaincode_Burn,
+								&burnable.BurnRequest{
+									Address: user2Address,
+									Symbol:  erc20.Symbol,
+									Amount:  burnAmount,
+								}),
+						&burnable.BurnResponse{}).(*burnable.BurnResponse)
+
+					Expect(b.Address).To(Equal(user2Address))
+					Expect(b.Amount).To(Equal(burnAmount))
+
+					balance := expectcc.PayloadIs(
+						cc.From(user2Identity).
+							Query(balance.BalanceServiceChaincode_GetBalance,
+								&balance.BalanceId{Address: user2Address, Symbol: erc20.Symbol}),
+						&balance.Balance{}).(*balance.Balance)
+
+					Expect(balance.Amount).To(Equal(uint64(200 - burnAmount)))
+				})
+
 			})
 		})
 	}

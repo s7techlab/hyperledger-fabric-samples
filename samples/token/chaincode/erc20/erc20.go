@@ -9,6 +9,7 @@ import (
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/account"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/allowance"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/balance"
+	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/burnable"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/config"
 	"github.com/s7techlab/hyperledger-fabric-samples/samples/token/service/config_erc20"
 )
@@ -32,6 +33,7 @@ func Gateways(instance gateway.ChaincodeInstance) []gateway.Service {
 		account.NewAccountServiceGatewayFromInstance(instance).ServiceDef(),
 		balance.NewBalanceServiceGatewayFromInstance(instance).ServiceDef(),
 		allowance.NewAllowanceServiceGatewayFromInstance(instance).ServiceDef(),
+		burnable.NewBurnableServiceGatewayFromInstance(instance).ServiceDef(),
 	}
 
 	return gateways
@@ -44,10 +46,12 @@ func New(name string, store balance.Store) (*router.Chaincode, error) {
 	accountSvc := account.NewLocalService()
 	configSvc := config.NewStateService()
 	// Balance management service with Account storage model
-	balanceSvc := balance.New(accountSvc, configSvc, balance.NewUTXOStore())
-	// Allowance management service
-	allowanceSvc := allowance.NewService(balanceSvc)
 
+	balanceSvc := balance.New(accountSvc, configSvc, store)
+	// Allowance management service
+	allowanceSvc := allowance.NewService(accountSvc, store)
+
+	burnableSvc := burnable.NewService(accountSvc, store)
 	erc20ConfigSvc := &config_erc20.ERC20Service{Token: configSvc}
 
 	r.Init(func(ctx router.Context) (interface{}, error) {
@@ -90,6 +94,9 @@ func New(name string, store balance.Store) (*router.Chaincode, error) {
 		return nil, err
 	}
 	if err := allowance.RegisterAllowanceServiceChaincode(r, allowanceSvc); err != nil {
+		return nil, err
+	}
+	if err := burnable.RegisterBurnableServiceChaincode(r, burnableSvc); err != nil {
 		return nil, err
 	}
 

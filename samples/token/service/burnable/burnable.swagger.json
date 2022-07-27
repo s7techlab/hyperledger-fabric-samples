@@ -38,14 +38,17 @@
     "balanceBurnResponse": {
       "type": "object",
       "properties": {
-        "sender_address": {
+        "address": {
           "type": "string"
         },
-        "recipient_address": {
+        "symbol": {
           "type": "string"
         },
-        "token": {
-          "type": "string"
+        "group": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "amount": {
           "type": "string",

@@ -22,6 +22,9 @@ func (this *BurnRequest) Validate() error {
 	if this.Address == "" {
 		return github_com_mwitkow_go_proto_validators.FieldError("Address", fmt.Errorf(`value '%v' must not be an empty string`, this.Address))
 	}
+	if this.Symbol == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Symbol", fmt.Errorf(`value '%v' must not be an empty string`, this.Symbol))
+	}
 	if !(this.Amount > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("Amount", fmt.Errorf(`value '%v' must be greater than '0'`, this.Amount))
 	}
